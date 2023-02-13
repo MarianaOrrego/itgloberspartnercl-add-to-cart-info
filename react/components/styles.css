@@ -1,0 +1,20 @@
+.container {
+    height  : 515px;
+    overflow: auto;
+    padding : 20px;
+}
+
+.container__item {
+    display: flex;
+    margin : 10px;
+}
+
+.container__img img {
+    margin-right: 14px;
+    width       : 240px;
+}
+
+.container__text p {
+    font-size: Montserrat;
+    font-size: 15px;
+}
