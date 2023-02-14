@@ -1,0 +1,83 @@
+@media (min-width: 769px) {
+    .container__item {
+        display: flex;
+        margin : 10px;
+    }
+
+    .container {
+        height  : 450px;
+        overflow: auto;
+        padding : 20px;
+    }
+
+    .container__img img {
+        margin-right: 14px;
+        width       : 240px;
+    }
+
+    .container__text2 {
+        border-top: 1px solid #9c9c9c;
+    }
+}
+
+@media (max-width: 769px) {
+    .container__item {
+        border-bottom: 1px solid #9c9c9c;
+        margin       : 10px;
+        padding      : 10px;
+    }
+
+    .container {
+        height  : 450px;
+        overflow: auto;
+    }
+
+    .container__img {
+        width: 260px;
+    }
+
+    .container__img img {
+        width: 100%;
+    }
+
+    .container__text2 {
+        bottom    : 0px;
+        border-top: 1px solid #9c9c9c;
+        position  : absolute;
+        width     : 100%;
+    }
+
+    .containerPhone {
+        margin: 15px;
+    }
+}
+
+
+
+.container__text p {
+    font-family: Montserrat;
+    font-size  : 15px;
+}
+
+.container__text2 p {
+    font-family: Montserrat;
+    font-size  : 1rem;
+    text-align : center;
+}
+
+.buttonContinueShop {
+    background-color: #484848;
+    border          : #484848;
+    color           : white;
+    cursor          : pointer;
+    font            : normal normal normal 1rem Montserrat-Medium;
+    height          : 40px;
+    text-align      : center;
+    width           : 100%;
+}
+
+.textShop {
+    color          : #484848;
+    font           : normal normal normal 15px Montserrat-Medium;
+    text-decoration: none;
+}
