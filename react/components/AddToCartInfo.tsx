@@ -10,7 +10,8 @@ const AddToCartInfo = ({ blockClass }: { blockClass: string }) => {
   const container = generateBlockClass(styles.container, blockClass),
     container__item = generateBlockClass(styles.container__item, blockClass),
     container__img = generateBlockClass(styles.container__img, blockClass),
-    container__text = generateBlockClass(styles.container__text, blockClass)
+    container__text = generateBlockClass(styles.container__text, blockClass),
+    container__text2 = generateBlockClass(styles.container__text2, blockClass)
 
   const productInfo = useProduct();
   const { orderForm: { items, totalizers } } = useOrderForm();
@@ -36,11 +37,11 @@ const AddToCartInfo = ({ blockClass }: { blockClass: string }) => {
           )
         })
       }
-      <div>
-        <p>Productos en la bolsa: {items.length}</p>
-        <p>Total: $ {totalizers[0]?.value / 100}</p>
+      <div className={container__text2}>
+        <p><b>Productos elegidos:</b> {items.length}</p>
+        <p><b>Total: $ {totalizers[0]?.value / 100}</b></p>
+        <ButtonGroup blockClass={blockClass} />
       </div>
-      <ButtonGroup />
     </div>
   )
 }

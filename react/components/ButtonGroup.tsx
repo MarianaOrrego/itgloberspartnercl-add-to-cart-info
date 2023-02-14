@@ -1,14 +1,20 @@
 import React from 'react'
+import { generateBlockClass } from '@vtex/css-handles';
+import styles from './styles.css';
 
-const ButtonGroup = () => {
+const ButtonGroup = ({ blockClass }: { blockClass: string }) => {
+
+    const buttonContinueShop = generateBlockClass(styles.buttonContinueShop, blockClass),
+        textShop = generateBlockClass(styles.textShop, blockClass),
+        containerPhone = generateBlockClass(styles.containerPhone, blockClass)
+
     return (
         <>
-            <div>
-                <a href='/'>CHECK OUT</a>
-            </div>
-            <div>
-                <button>Continúa comprando</button>
-                <a href='/'>Ver bolsa de compra</a>
+            <div className={containerPhone}>
+                <a href='/hombres'>
+                    <button className={buttonContinueShop}>Continúa comprando</button>
+                </a>
+                <a className={textShop} href='/checkout/#/cart'>Ver bolsa de compra</a>
             </div>
         </>
     )
