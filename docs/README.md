@@ -1,97 +1,216 @@
-📢 Use this project, [contribute](https://github.com/{OrganizationName}/{AppName}) to it or open issues to help evolve it using [Store Discussion](https://github.com/vtex-apps/store-discussion).
+# ADD TO CART INFO
 
-# APP NAME
 
 <!-- DOCS-IGNORE:start -->
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-0-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 <!-- DOCS-IGNORE:end -->
 
-Under the app's name, you should explain the topic, giving a **brief description** of its **functionality** in a store when installed.
+Modal que se activará cada que el cliente agregue un producto a la bolsa, observará la información del contenido de su carrito, tendrá opción para continuar comprando o ver la bolsa de compras
 
-Next, **add media** (either an image of a GIF) with the rendered components, so that users can better understand how the app works in practice. 
+![image](https://user-images.githubusercontent.com/83648336/219954235-e0d539e0-8b40-4682-98b9-cc7470783699.png)
 
-![Media Placeholder](https://user-images.githubusercontent.com/52087100/71204177-42ca4f80-227e-11ea-89e6-e92e65370c69.png)
+## Configuración
 
-## Configuration 
+1. Usar el template [vtex-app](https://github.com/vtex-apps/react-app-template)
+2. Modificar el `manifest.json`
+     ```json 
+        {
+          "vendor": "itgloberspartnercl",
+          "name": "add-to-cart-info",
+          "version": "0.0.1",
+          "title": "Add to cart info",
+          "description": "Componente que mostrará información al momento de agregar un producto al carrito de compras",
+        }
+     ``` 
+      **vendor:** nombre del cliente o información suministrada por él
 
-In this section, you first must **add the primary instructions** that will allow users to use the app's blocks in their store, such as:
+      **name:** nombre del componente
 
-1. Adding the app as a theme dependency in the `manifest.json` file;
-2. Declaring the app's main block in a given theme template or inside another block from the theme.
+      **version:** versión del componente
 
-Remember to add a table with all blocks exported by the app and their descriptions. You can verify an example of it on the [Search Result documentation](https://vtex.io/docs/components/all/vtex.search-result@3.56.1/). 
+      **title:** titulo asigando al componente
 
-Next, add the **props table** containing your block's props. 
-
-If the app exports more than one block, create several tables - one for each block. For example:
-
-### `block-1` props
-
-| Prop name    | Type            | Description    | Default value                                                                                                                               |
-| ------------ | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | 
-| `XXXXX`      | `XXXXXX`       | XXXXXXXX         | `XXXXXX`        |
-
-
-### `block-2` props
-
-| Prop name    | Type            | Description    | Default value                                                                                                                               |
-| ------------ | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | 
-| `XXXXX`      | `XXXXXX`       | XXXXXXXX         | `XXXXXX`        |
-
-Prop types are: 
-
-- `string` 
-- `enum` 
-- `number` 
-- `boolean` 
-- `object` 
-- `array` 
-
-When documenting a prop whose type is `object` or `array` another prop table will be needed. You can create it following the example below:
-
-- `propName` object:
-
-| Prop name    | Type            | Description    | Default value                                                                                                                               |
-| ------------ | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | 
-| `XXXXX`      | `XXXXXX`       | XXXXXXXX         | `XXXXXX`        |
+      **description:** breve descripción del componente
 
 
-Remember to also use this Configuration section to  **showcase any necessary disclaimer** related to the app and its blocks, such as the different behavior it may display during its configuration. 
+   Agregar en la sección `builders` dentro del `manifest.json` un `store`
 
-## Modus Operandi *(not mandatory)*
+    ```json   
+        "store" : "0.x"
+    ```
+   En `dependencies` se van a agregar las siguientes dependencias necesarias para el funcionamiento del **componente**
 
-There are scenarios in which an app can behave differently in a store, according to how it was added to the catalog, for example. It's crucial to go through these **behavioral changes** in this section, allowing users to fully understand the **practical application** of the app in their store.
+    ```json   
+        "dependencies": {
+          "vtex.checkout-resources": "0.x",
+          "vtex.order-manager": "0.x",
+          "vtex.product-context": "0.x"
+        }
+    ```  
+3. En el template se tienen dos `package.json` en ambos se debe modificar la `version` y el `name` 
+   ```json 
+        "version": "0.0.1",
+        "name": "add-to-cart-info",
+   ```  
+4. Agregar a la carpeta raíz una carpeta llamada `store`, dentro crear un file llamado `interfaces.json`, en este file se tendrá la siguiente configuración:
+    ```json 
+        {
+          "add-to-cart-info": {
+              "component": "AddToCartInfo",
+              "render": "client"
+          }
+        }
+    ```
+      Se especifica el nombre del componente con el cual será llamado en el `store-theme` de la tienda que se esta realizando, dentro se encuentra el `component` (se debe poner el nombre del componente React a realizar) y por ultimo el `render` donde se especifica que su renderización será solo en la parte del *cliente* 
 
-If you feel compelled to give further details about the app, such as it's **relationship with the VTEX admin**, don't hesitate to use this section. 
+5. Finalizado los puntos anteriores, se procede a ingresar a la carpeta `react` en la cual se realizan las siguientes configuraciones: 
+    
+    5.1. Ejecutar el comando `yarn install` para preparar las dependencias
+    
+    5.2. Crear el functional component `AddToCartInfo.tsx` con la siguiente configuración 
+    
+    ```typescript
+          import AddToCartInfo from './components/AddToCartInfo';
 
-## Customization
+          export default AddToCartInfo
+    ```   
+    5.3. Crear una carpeta llamada `components`, dentro se tiene el functional component `AddToCartInfo` con la configuración necesaria para el funcionamiento del componente, se tienen las importaciones empleadas y el desarrollo del componente
+    ```typescript
+          import React from 'react';
+          import { useProduct } from 'vtex.product-context';
+          import { useOrderForm } from 'vtex.order-manager/OrderForm';
+          import ButtonGroup from './ButtonGroup';
+          import { generateBlockClass } from '@vtex/css-handles';
+          import styles from './styles.css';
 
-The first thing that should be present in this section is the sentence below, showing users the recipe pertaining to CSS customization in apps:
+          const AddToCartInfo = ({ blockClass }: { blockClass: string }) => {
 
-`In order to apply CSS customizations in this and other blocks, follow the instructions given in the recipe on [Using CSS Handles for store customization](https://vtex.io/docs/recipes/style/using-css-handles-for-store-customization).`
+            const container = generateBlockClass(styles.container, blockClass),
+              container__item = generateBlockClass(styles.container__item, blockClass),
+              container__img = generateBlockClass(styles.container__img, blockClass),
+              container__text = generateBlockClass(styles.container__text, blockClass),
+              container__text2 = generateBlockClass(styles.container__text2, blockClass)
 
-Thereafter, you should add a single column table with the available CSS handles for the app, like the one below. Note that the Handles must be ordered alphabetically.
+            const productInfo = useProduct();
+            const { orderForm: { items, totalizers } } = useOrderForm();
+
+            console.log("Info del producto", productInfo)
+
+            return (
+              <div className={container}>
+                {
+                  items.map((item: any, index: number) => {
+                    return (
+                      <div key={index} className={container__item}>
+                        <div className={container__img}>
+                          <img src={item.imageUrls.at1x} />
+                        </div>
+                        <div className={container__text}>
+                          <p><b>{item.name}</b></p>
+                          <p><b>Id:</b> {item.id}</p>
+                          <p><b>Cantidad:</b> {item.quantity}</p>
+                          <p>$ {item.price / 100}</p>
+                        </div>
+                      </div>
+                    )
+                  })
+                }
+                <div className={container__text2}>
+                  <p><b>Productos elegidos:</b> {items.length}</p>
+                  <p><b>Total: $ {totalizers[0]?.value / 100}</b></p>
+                  <ButtonGroup blockClass={blockClass} />
+                </div>
+              </div>
+            )
+          }
+
+          export default AddToCartInfo
+    ```
+    
+    Se encuentra en la misma carpeta `components` otro functional componente llamado `ButtonGroup` con la siguiente configuración
+    ```typescript
+          import React from 'react'
+          import { generateBlockClass } from '@vtex/css-handles';
+          import styles from './styles.css';
+
+          const ButtonGroup = ({ blockClass }: { blockClass: string }) => {
+
+              const buttonContinueShop = generateBlockClass(styles.buttonContinueShop, blockClass),
+                  textShop = generateBlockClass(styles.textShop, blockClass),
+                  containerPhone = generateBlockClass(styles.containerPhone, blockClass)
+
+              return (
+                  <>
+                      <div className={containerPhone}>
+                          <a href='/hombres'>
+                              <button className={buttonContinueShop}>Continúa comprando</button>
+                          </a>
+                          <a className={textShop} href='/checkout/#/cart'>Ver bolsa de compra</a>
+                      </div>
+                  </>
+              )
+          }
+
+          export default ButtonGroup
+    ```
+
+6. Linkear el componente custom al `store-theme` de la tienda base
+
+    6.1. Iniciar sesión 
+    ```console
+       vtex login <vendor>
+    ```
+
+    6.2. Elegir el `workspace` en el cual se esta trabajando
+    ```console
+       vtex use <nombre_worksapce>
+    ```
+
+    6.3. Linkear el componente
+    ```console
+       vtex link
+    ```
+
+    6.4. Verificar que el componente quede linkeado, para eso se emplea el siguiente comando
+
+     ```console
+        vtex ls
+     ```
+
+    En consola debe verse las aplicaciones linkeadas al proyecto, verificando de esta forma que el componente quedo listo para emplearse:
+
+    ```console
+        Linked Apps in <vendor> at workspace <nombre_store_theme>
+        itgloberspartnercl.add-to-cart-info             0.0.1
+     ```
+      
+7. Hacer el llamado del componente desde el `store theme`
+
+
+## Personalización
+      
+
+Para personalizar el componente con CSS, siga las instrucciones que se encuentran en [Using CSS Handles for store customization](https://developers.vtex.com/docs/guides/vtex-io-documentation-using-css-handles-for-store-customization).
+
+Las clases empleadas en el componente son:
 
 | CSS Handles |
 | ----------- | 
-| `XXXXX` | 
-| `XXXXX` | 
-| `XXXXX` | 
-| `XXXXX` | 
-| `XXXXX` |
-
-
-If there are none, add the following sentence instead:
-
-`No CSS Handles are available yet for the app customization.`
+| `buttonContinueShop` | 
+| `quick__container` | 
+| `container` | 
+| `container__img` | 
+| `container__item` | 
+| `container__text` | 
+| `container__text2` | 
+| `containerPhone` | 
+| `textShop` | 
 
 <!-- DOCS-IGNORE:start -->
 
-## Contributors ✨
-
-Thanks goes to these wonderful people:
+## Colaboradores ✨
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
@@ -100,15 +219,6 @@ Thanks goes to these wonderful people:
 <!-- prettier-ignore-end -->
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind are welcome!
+Mariana Orrego Franco
 
 <!-- DOCS-IGNORE:end -->
-
----- 
-
-Check out some documentation models that are already live: 
-- [Breadcrumb](https://github.com/vtex-apps/breadcrumb)
-- [Image](https://vtex.io/docs/components/general/vtex.store-components/image)
-- [Condition Layout](https://vtex.io/docs/components/all/vtex.condition-layout@1.1.6/)
-- [Add To Cart Button](https://vtex.io/docs/components/content-blocks/vtex.add-to-cart-button@0.9.0/)
-- [Store Form](https://vtex.io/docs/components/all/vtex.store-form@0.3.4/)
